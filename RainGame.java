@@ -25,10 +25,11 @@ public class RainGame {
 			for(int i=1;i<=9;i++){
 				if(chooselevel.equals(i+"")){
 					level = i;
-					score = i*10-9;
+					score = (i-1)*10;
 					begin = true;
 				}
 			}
+			Zen.setEditText("");
 			}
 			while(begin){
 			
@@ -79,14 +80,16 @@ public class RainGame {
 				x = (int) (Math.random()*200);
 				y = (int) (Math.random()*200);
 			    singlescore -= text.length();}	
-			score += singlescore;
+			
 			if(score%10 == 0 && singlescore > 0){
 				level++;}
 			else if((score%10+singlescore)<0 && singlescore < 0 ){
 				level--;}
-			Zen.sleep(50);// sleep for 90 milliseconds
 			
-			if(score<0){
+			score += singlescore;
+			Zen.sleep(90);// sleep for 90 milliseconds
+			
+			if(score<0 || level<0){
 				gameover = true;
 			}
             }
