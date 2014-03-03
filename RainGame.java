@@ -10,22 +10,22 @@ public class RainGame {
 		// Do not put your name or your UIN. 
 		// REMEMBER TO COMMIT this file...
 	
-		int x=0, y=0, dx=0, dy=0, score = 0, level = 1, singlescore = 0;
+		int x=0, y=0, dx=0, dy=0, score = 0, level = 1, prelevel = 1, singlescore = 0, cx=-200, cy=465, dcx=14;
 		String text = "";
-		boolean begin = false, gameover = false;
+		boolean begin = false, gameover = false, congratulate = false;
 		
 		Zen.setFont("Helvetica-32");
 		
 		while (Zen.isRunning()) {
 			while (!begin){
-				Zen.setColor(0, 255, 0);
-				Zen.drawText("Which level would you like begin?(1-9)",100,260);
+				Zen.setColor(0, 191, 255);
+				Zen.drawText("Which level would you like begin?(1-9)",50,230);
 				Zen.flipBuffer();
 			String chooselevel = Zen.getEditText();
 			for(int i=1;i<=9;i++){
 				if(chooselevel.equals(i+"")){
 					level = i;
-					score = (i-1)*10;
+					score = i*10-10;
 					begin = true;
 				}
 			}
@@ -34,10 +34,10 @@ public class RainGame {
 			while(begin){
 			
             if(!gameover){
-			Zen.setColor(0, 0, 0);
+			Zen.setColor(0,0,0);
 			Zen.fillRect(0, 0, Zen.getZenWidth(), Zen.getZenHeight());
 
-			Zen.setColor(0, 255, 0);
+			Zen.setColor(64, 224, 208);
 			Zen.drawText(text, x, y);
 			
 			Zen.drawText("Level: "+level,10,30);
@@ -49,8 +49,8 @@ public class RainGame {
 			if (text.length() == 0) {
 				x = (int) (Math.random()*200);
 				y = (int) (Math.random()*200);
-				dx = 2*level;
-				dy = 2*level;
+				dx = 1;
+				dy = 1;
 				text = "" + (int) (Math.random() * 999);
 			}
 			
@@ -67,11 +67,11 @@ public class RainGame {
 			singlescore = 0;
 			for(int i=0;i < user.length();i++) {
 				char c = user.charAt(i);
-				if(c == text.charAt(0)){
+				if(!user.equals("") && c == text.charAt(0)){
 					text = text.substring(1,text.length()); // all except first character
 					singlescore++;
 				}
-				else if(c != text.charAt(0)){
+				else if(!user.equals("") && c != text.charAt(0)){
 					text = text.substring(1,text.length()); // all except first character
 					singlescore--;
 				}
@@ -81,25 +81,47 @@ public class RainGame {
 				y = (int) (Math.random()*200);
 			    singlescore -= text.length();}	
 			
-			if(score%10 == 0 && singlescore > 0){
-				level++;}
+			if(score%10 == 9 && singlescore > 0){
+				level++;
+				prelevel = level-1;}
 			else if((score%10+singlescore)<0 && singlescore < 0 ){
-				level--;}
-			
+				level--;
+				prelevel = level+1;}
+			Zen.sleep(50);// sleep for 90 milliseconds
 			score += singlescore;
-			Zen.sleep(90);// sleep for 90 milliseconds
 			
-			if(score<0 || level<0){
+			if(score<0 || level <=0){
 				gameover = true;
 			}
-            }
+			if(level%10 == 0 && level != 0 && prelevel < level){
+				congratulate = true;
+				prelevel = level;
+			}
+			while(congratulate && cx<(Zen.getZenWidth()+50)){
+			Zen.setColor(64, 224, 208);
+			Zen.drawText("Level: "+level,10,30);
+			Zen.drawText("Score: "+score,10,60);
+			Zen.setFont("Helvetica-64");
+			Zen.drawText("GG, Keep Up!", cx, cy);
+			Zen.setFont("Helvetica-32");
+			cx+=dcx;
+			Zen.flipBuffer();
+			Zen.sleep(40);
+			}
+            
+			if(cx>=(Zen.getZenWidth()+50)){
+				cx=-200;
+				congratulate = false;
+			}
+			}
+ 
 			else{
             
 			Zen.setColor(0, 0, 0);
 			Zen.fillRect(0, 0, Zen.getZenWidth(), Zen.getZenHeight());
 			
 			Zen.setColor(255, 0, 0);
-			Zen.drawText("Game Over",160,150);
+			Zen.drawText("Game Over",235,240);
 			Zen.flipBuffer();
             }
 			}
@@ -107,4 +129,5 @@ public class RainGame {
 
 	}
 
-}
+	}
+
