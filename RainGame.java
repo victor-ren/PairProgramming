@@ -1,6 +1,6 @@
-//UIUC CS125 SPRING 2014 MP. File: RainGame.java, CS125 Project: PairProgramming, Version: 2014-02-24T21:11:32-0600.309819000
+//UIUC CS125 SPRING 2014 MP. File: RainGame.java, CS125 Project: PairProgramming, Version: 2014-02-24T21:11:30-0600.295816000
 /**
- * @author jzhng125,weiren2
+ * @author jzhng125
  */
 public class RainGame {
 
@@ -10,7 +10,7 @@ public class RainGame {
 		// Do not put your name or your UIN. 
 		// REMEMBER TO COMMIT this file...
 	
-		int x=0, y=0, dx=0, dy=0, score = 0, level = 1;
+		int x=0, y=0, dx=0, dy=0, score = 0, level = 1, singlescore = 0;
 		String text = "";
 		long startTime =System.currentTimeMillis();
 		
@@ -18,52 +18,55 @@ public class RainGame {
 		while (Zen.isRunning()) {
 
 			if (text.length() == 0) {
-				x = (int) (Math.random()*500);
-				y = (int) (Math.random()*500);
+				x = (int) (Math.random()*200);
+				y = (int) (Math.random()*200);
 				dx = 2*level;
 				dy = 2*level;
 				text = "" + (int) (Math.random() * 999);
-
 			}
-			Zen.setColor(0, 0, 0);
+			Zen.setColor(255, 0, 255);
 			Zen.fillRect(0, 0, Zen.getZenWidth(), Zen.getZenHeight());
-			
+
 			Zen.setColor(0, 255, 0);
 			Zen.drawText(text, x, y);
 			
-			Zen.drawText("Level: "+level,0,32);
-			Zen.drawText("Score: "+score,0,64);
-					//if ((x==0) && (y == Zen.getZenHeight() / 2))
-					//Zen.drawText("Score: "+score,0,64);
-					//闪现的效果
+			Zen.drawText("Level: "+level,10,30);
+			Zen.drawText("Score: "+score,10,60);
 			Zen.flipBuffer();
 			
 			x += dx;
 			y += dy;
 			
-			if(x>(Zen.getZenWidth()+30) || y>(Zen.getZenHeight()+30)){
-				x = (int) (Math.random()*500);
-				y = (int) (Math.random()*500);
-			}
 			// Find out what keys the user has been pressing.
 			String user = Zen.getEditText();
 			// Reset the keyboard input to an empty string
 			// So next iteration we will only get the most recently pressed keys.
 			Zen.setEditText("");
-			int singlescore = 0;
+			
+			singlescore = 0;
 			for(int i=0;i < user.length();i++) {
 				char c = user.charAt(i);
 				if(c == text.charAt(0)){
 					text = text.substring(1,text.length()); // all except first character
-				singlescore++;}
+					singlescore++;
+				}
+				else if(c != text.charAt(0)){
+					text = text.substring(1,text.length()); // all except first character
+					singlescore--;
+				}
 			}
+			if(x>(Zen.getZenWidth()+9*text.length()) || y>(Zen.getZenHeight()+9*text.length())){
+				x = (int) (Math.random()*200);
+				y = (int) (Math.random()*200);
+			    singlescore -= text.length();}	
 			score += singlescore;
-			Zen.sleep(90);// sleep for 90 milliseconds
+			if(score%10 == 0 && singlescore > 0){
+				level++;}
+			else if((score%10+singlescore)<0 && singlescore < 0 ){
+				level--;}
+			Zen.sleep(50);// sleep for 90 milliseconds
 
 		}
-		long elapsed = System.currentTimeMillis() - startTime;
-		startTime = System.currentTimeMillis();
-		score += 7000 / elapsed;
 	}
 
 }
