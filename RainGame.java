@@ -10,7 +10,7 @@ public class RainGame {
 		// Do not put your name or your UIN. 
 		// REMEMBER TO COMMIT this file...
 	
-		int x=0, y=0, dx=0, dy=0, score = 0;
+		int x=0, y=0, dx=0, dy=0, score = 0, level = 1;
 		String text = "";
 		long startTime =System.currentTimeMillis();
 		
@@ -18,10 +18,10 @@ public class RainGame {
 		while (Zen.isRunning()) {
 
 			if (text.length() == 0) {
-				x = 0;
-				y = Zen.getZenHeight() / 2;
+				x = (int) (Math.random()*500);
+				y = (int) (Math.random()*500);
 				dx = 2;
-				dy = 0;
+				dy = 2;
 				text = "" + (int) (Math.random() * 999);
 				long elapsed = System.currentTimeMillis() - startTime;
 				startTime = System.currentTimeMillis();
@@ -33,11 +33,11 @@ public class RainGame {
 			Zen.setColor(0, 255, 0);
 			Zen.drawText(text, x, y);
 			
-			Zen.drawText("Level: 0",0,32);
+			Zen.drawText("Level: "+level,0,32);
 			Zen.drawText("Score: "+score,0,64);
 					//if ((x==0) && (y == Zen.getZenHeight() / 2))
 					//Zen.drawText("Score: "+score,0,64);
-					//ÉÁÏÖµÄÐ§¹û
+					//é—ªçŽ°çš„æ•ˆæžœ
 			Zen.flipBuffer();
 			
 			x += dx;
