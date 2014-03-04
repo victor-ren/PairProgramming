@@ -3,6 +3,12 @@ import java.awt.Image;
 import sun.audio.*;
 import java.io.*;
 
+
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
+
+
+
 //UIUC CS125 SPRING 2014 MP. File: RainGame.java, CS125 Project: PairProgramming, Version: 2014-02-24T21:11:30-0600.295816000
 /**
  * @author jzhng125,weiren2
@@ -10,29 +16,46 @@ import java.io.*;
 
 public class RainGame {
 	
+	//public static AudioStream as;
+	//public static ContinuousAudioDataStream gg;
+	//public static AudioData data;
+
+
 	public static AudioStream as;
+	//public static AudioData audiodata;
+	//public static ContinuousAudioDataStream continuousaudiostream;
 
-	@SuppressWarnings("resource")
-	public static void playLoop(String Filename) throws IOException{ 
 
-		InputStream in = new FileInputStream(Filename); 
 
-		AudioStream as = new AudioStream(in);
-		//AudioPlayer.player.start(as);
+	public static void play(String Filename) throws IOException{ 
+
+		//InputStream in = new FileInputStream(Filename);
+
+		//as = new AudioStream(new FileInputStream(Filename));
+		//audiodata = as.getData();
+		//continuousaudiostream = new ContinuousAudioDataStream(audiodata);
+	    //AudioPlayer.player.start(continuousaudiostream);
 		
-		AudioData data = as.getData(); 
-		ContinuousAudioDataStream gg= new ContinuousAudioDataStream (data); 
-		AudioPlayer.player.start(gg);
+		as = new AudioStream(new FileInputStream(Filename));
+		
+		AudioPlayer.player.start(as);
 		
 		}
 	
-	public static void play(String Filename) throws IOException{
-		InputStream in = new FileInputStream(Filename);
+	public static void playOnce(String Filename) throws IOException{
+		//InputStream in = new FileInputStream(Filename);
 
-		AudioStream as = new AudioStream(in);
+		AudioStream as = new AudioStream(new FileInputStream(Filename));
 		AudioPlayer.player.start(as);
 	}
 	
+	public static void stop(String Filename) throws IOException{
+		//InputStream in = new FileInputStream(Filename);
+
+		//AudioStream as = new AudioStream(new FileInputStream(Filename));
+		//AudioPlayer.player.start(as);
+		AudioPlayer.player.stop(as);
+	}
 
 	public static void main(String[] args) throws IOException {
 		// To get points type your netids above (CORRECTLY-Please double check your partner correctly spells your netid correctly!!)
@@ -40,11 +63,11 @@ public class RainGame {
 		// Do not put your name or your UIN. 
 		// REMEMBER TO COMMIT this file...
 	
-		int x=0, y=0, dx=0, dy=0, score = 0, level = 1, prelevel = 1, singlescore = 0, cx=-200, cy=465, dcx=14, lifecount = 3;
+		int x=0, y=0, dx=0, dy=0, score = 0, level = 1, prelevel = 1, singlescore = 0, cx=-200, cy=465, dcx=14, lifecount = 3,once=0;
 		String text = "";
 		boolean begin = false, gameover = false, congratulate = false;
+		play("bgm.wav");
 		
-		playLoop("bgm.wav");
 		Zen.setFont("Helvetica-32");
 		
 		while (Zen.isRunning()) {
@@ -54,6 +77,7 @@ public class RainGame {
 				Zen.drawText("Which level would you like begin?(1-9)",40,230);
 				Zen.flipBuffer();
 				String chooselevel = Zen.getEditText();
+				
 				
 				for(int i=1;i<=9;i++){
 					if(chooselevel.equals(i+"")){
@@ -173,12 +197,12 @@ public class RainGame {
 			
 					if(score%5 == 4 && singlescore > 0){
 						level++;
-						play("plus.wav");
+						playOnce("plus.wav");
 						prelevel = level-1;
 					}
 					else if((score%5+singlescore)<0 && singlescore < 0 ){
 						level--;
-						play("minus.wav");
+						playOnce("minus.wav");
 						prelevel = level+1;
 						lifecount--;
 					}
@@ -234,7 +258,10 @@ public class RainGame {
 				Zen.setColor(255, 0, 0);
 				Zen.setFont("Helvetica-80");
 				Zen.drawText("Game Over",110,120);
-				play("over.wav");
+				stop("bgm.wav");
+				for(;once<1;once++){
+					playOnce("over.wav");
+				}
 				Zen.flipBuffer();
 
             }
