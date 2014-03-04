@@ -1,6 +1,7 @@
 import java.awt.Graphics2D;
 import java.awt.Image;
-
+import sun.audio.*;
+import java.io.*;
 
 //UIUC CS125 SPRING 2014 MP. File: RainGame.java, CS125 Project: PairProgramming, Version: 2014-02-24T21:11:30-0600.295816000
 /**
@@ -8,8 +9,32 @@ import java.awt.Image;
  */
 
 public class RainGame {
+	
+	public static AudioStream as;
 
-	public static void main(String[] args) {
+	@SuppressWarnings("resource")
+	public static void playLoop(String Filename) throws IOException{ 
+
+		InputStream in = new FileInputStream(Filename); 
+
+		AudioStream as = new AudioStream(in);
+		//AudioPlayer.player.start(as);
+		
+		AudioData data = as.getData(); 
+		ContinuousAudioDataStream gg= new ContinuousAudioDataStream (data); 
+		AudioPlayer.player.start(gg);
+		
+		}
+	
+	public static void play(String Filename) throws IOException{
+		InputStream in = new FileInputStream(Filename);
+
+		AudioStream as = new AudioStream(in);
+		AudioPlayer.player.start(as);
+	}
+	
+
+	public static void main(String[] args) throws IOException {
 		// To get points type your netids above (CORRECTLY-Please double check your partner correctly spells your netid correctly!!)
 		// Your netid is the unique part of your @illinois email address
 		// Do not put your name or your UIN. 
@@ -19,7 +44,7 @@ public class RainGame {
 		String text = "";
 		boolean begin = false, gameover = false, congratulate = false;
 		
-		
+		playLoop("bgm.wav");
 		Zen.setFont("Helvetica-32");
 		
 		while (Zen.isRunning()) {
@@ -74,7 +99,7 @@ public class RainGame {
 
 					if (text.length() == 0) {
 						x = (int) (Math.random()*280)+20;
-						y = (int) (Math.random()*190)+60;
+						y = (int) (Math.random()*190)+100;
 						
 						if (Math.random()>0.5 && level>2) 
 							dx = level;
@@ -148,10 +173,12 @@ public class RainGame {
 			
 					if(score%5 == 4 && singlescore > 0){
 						level++;
+						play("plus.wav");
 						prelevel = level-1;
 					}
 					else if((score%5+singlescore)<0 && singlescore < 0 ){
 						level--;
+						play("minus.wav");
 						prelevel = level+1;
 						lifecount--;
 					}
@@ -175,6 +202,20 @@ public class RainGame {
 						Zen.setFont("Helvetica-64");
 						Zen.drawText("GG, Keep Up!", cx, cy);
 						Zen.setFont("Helvetica-32");
+						Zen.drawText("Life: ",10,90);
+						Graphics2D g1 = Zen.getBufferGraphics();
+						if(lifecount == 3){
+							g1.drawImage(image, 70, 68, null);
+							g1.drawImage(image, 110, 68, null);
+							g1.drawImage(image, 150, 68, null);
+							}
+						else if(lifecount == 2){
+								g1.drawImage(image, 70, 68, null);
+								g1.drawImage(image, 110, 68, null);
+								}
+						else if(lifecount == 1){
+								g1.drawImage(image, 70, 68, null);
+							}
 						cx+=dcx;	
 						Zen.flipBuffer();
 						Zen.sleep(30);
@@ -193,6 +234,7 @@ public class RainGame {
 				Zen.setColor(255, 0, 0);
 				Zen.setFont("Helvetica-80");
 				Zen.drawText("Game Over",110,120);
+				play("over.wav");
 				Zen.flipBuffer();
 
             }
