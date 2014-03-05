@@ -63,16 +63,17 @@ public class RainGame {
 		// Do not put your name or your UIN. 
 		// REMEMBER TO COMMIT this file...
 	
-		int x=0, y=0, dx=0, dy=0, score = 0, level = 1, prelevel = 1, singlescore = 0, cx=-200, cy=465, dcx=14, lifecount = 3,once=0;
+		int x=0, y=0, dx=0, dy=0, score = 0, level = 1, prelevel = 1, singlescore = 0;
+		int cx=-200, cy=465, dcx=14, lifecount = 3,once=0, shade = 170;
 		String text = "";
-		boolean begin = false, gameover = false, congratulate = false;
-		play("bgm.wav");
+		boolean begin = false, gameover = false, congratulate = false, again = true;
 		
 		Zen.setFont("Helvetica-32");
-		
+		if(again || !again){
 		while (Zen.isRunning()) {
 			
-			while (!begin){
+				play("bgm.wav");
+			while (!begin && again){
 				Zen.setColor(0, 191, 255);
 				Zen.drawText("Which level would you like begin?(1-9)",40,230);
 				Zen.flipBuffer();
@@ -101,28 +102,29 @@ public class RainGame {
 					
 			
 					Zen.drawText("Level: "+level,10,30);
-					Zen.drawText("Score: "+score,10,60);
-					Zen.drawText("Life: ",10,90);
+					Zen.drawText("Score: "+score,140,30);
+					Zen.drawText("Life: ",460,30);
 					Image image = Zen.getCachedImage("life.png");
 					Graphics2D g = Zen.getBufferGraphics();
+					Zen.drawText("_____________________________________________",0,40);
 					if(lifecount == 3){
-					g.drawImage(image, 70, 68, null);
-					g.drawImage(image, 110, 68, null);
-					g.drawImage(image, 150, 68, null);
+					g.drawImage(image, 520, 5, null);
+					g.drawImage(image, 560, 5, null);
+					g.drawImage(image, 600, 5, null);
 					}
 					if(lifecount == 2){
-						g.drawImage(image, 70, 68, null);
-						g.drawImage(image, 110, 68, null);
+						g.drawImage(image, 520, 5, null);
+						g.drawImage(image, 560, 5, null);
 						}
 					if(lifecount == 1){
-						g.drawImage(image, 70, 68, null);
+						g.drawImage(image, 520, 5, null);
 					}
 					Zen.flipBuffer();
 			
 			
 
 					if (text.length() == 0) {
-						x = (int) (Math.random()*280)+20;
+						x = (int) (Math.random()*280)+30;
 						y = (int) (Math.random()*190)+100;
 						
 						if (Math.random()>0.5 && level>2) 
@@ -212,6 +214,7 @@ public class RainGame {
 			
 					if(score<0 || level <=0 || lifecount == 0){
 						gameover = true;
+						again = false;
 					}
 					
 					if(level%5 == 0 && level != 0 && prelevel < level && text.equals("")){
@@ -222,24 +225,25 @@ public class RainGame {
 					while(congratulate && cx<(Zen.getZenWidth()+50)){
 						Zen.setColor(255, 255, 0);
 						Zen.drawText("Level: "+level,10,30);
-						Zen.drawText("Score: "+score,10,60);
+						Zen.drawText("Score: "+score,140,30);
 						Zen.setFont("Helvetica-64");
 						Zen.drawText("GG, Keep Up!", cx, cy);
 						Zen.setFont("Helvetica-32");
-						Zen.drawText("Life: ",10,90);
+						Zen.drawText("Life: ",460,30);
 						Graphics2D g1 = Zen.getBufferGraphics();
 						if(lifecount == 3){
-							g1.drawImage(image, 70, 68, null);
-							g1.drawImage(image, 110, 68, null);
-							g1.drawImage(image, 150, 68, null);
+							g1.drawImage(image, 520, 5, null);
+							g1.drawImage(image, 560, 5, null);
+							g1.drawImage(image, 600, 5, null);
 							}
 						else if(lifecount == 2){
-								g1.drawImage(image, 70, 68, null);
-								g1.drawImage(image, 110, 68, null);
+								g1.drawImage(image, 520, 5, null);
+								g1.drawImage(image, 560, 5, null);
 								}
 						else if(lifecount == 1){
-								g1.drawImage(image, 70, 68, null);
+								g1.drawImage(image, 520, 5, null);
 							}
+						Zen.drawText("_____________________________________________",0,40);
 						cx+=dcx;	
 						Zen.flipBuffer();
 						Zen.sleep(30);
@@ -252,12 +256,41 @@ public class RainGame {
 				}
  
 			else{
+				
+				while (shade > 0) { // the instructions within these braces will be
+									// repeated until shade = 0
+					Zen.setColor(shade, shade, shade);
+					Zen.fillRect(0, 0, 640, 480); 
+					shade = shade - 1; // this is where the shade variable is changed
+							// each time the loop executes once
+					Zen.sleep(2);
+					Zen.flipBuffer();
+				}
 				Zen.setColor(0, 0, 0);
 				Zen.fillRect(0, 0, Zen.getZenWidth(), Zen.getZenHeight());
 			
 				Zen.setColor(255, 0, 0);
 				Zen.setFont("Helvetica-80");
 				Zen.drawText("Game Over",110,120);
+				
+				Zen.setFont("Helvetica-32");
+				Zen.drawText("Level: "+level,10,30);
+				if(score > 0){
+				Zen.drawText("Score: "+score,140,30);}
+				else{Zen.drawText("Score: "+(score+1),140,30);}
+				Zen.drawText("Life: ",460,30);
+				Image image = Zen.getCachedImage("life.png");
+				Graphics2D g = Zen.getBufferGraphics();
+				Zen.drawText("_____________________________________________",0,40);
+				
+				Zen.drawText("Try Again",245,280);
+				int tx = Zen.getMouseX();
+				int ty = Zen.getMouseY();
+				if(tx>0 && tx<640 && ty>0 && ty<480 && Zen.getMouseButtonsAndModifierKeys() != 0){
+					again = true;
+					begin = false;
+				}
+						
 				stop("bgm.wav");
 				for(;once<1;once++){
 					playOnce("over.wav");
@@ -267,6 +300,6 @@ public class RainGame {
             }
 		}
 	}
-
+	}
 }
 }
