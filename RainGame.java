@@ -79,7 +79,10 @@ public class RainGame {
 			x=0 ;y=0; dx=0; dy=0; score = 0; level = 1; prelevel = 1; singlescore = 0;
 			cx=-200;cy=465;dcx=14;
 			gameover=false;
-				play("bgm.wav");
+			boolean temp=true;
+			
+			
+				
 			while (!begin && again){
 				Zen.setColor(0, 191, 255);
 				Zen.drawText("Which level would you like begin?(1-9)",40,230);
@@ -98,8 +101,15 @@ public class RainGame {
 				Zen.setEditText("");
 			}
 			
+			long startTime =System.currentTimeMillis();	
 			while(begin && !again){
-			
+				
+				long elapsed = System.currentTimeMillis() - startTime;
+				if (elapsed%52000>=0 && elapsed%52000<=900 && temp){
+					play("bgm.wav");
+					temp=false;
+				}
+				if (elapsed%52000>900) temp=true;
 				if(!gameover){
 					Zen.setColor(0,0,0);
 					Zen.fillRect(0, 0, Zen.getZenWidth(), Zen.getZenHeight());
