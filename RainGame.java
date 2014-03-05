@@ -64,7 +64,7 @@ public class RainGame {
 		// REMEMBER TO COMMIT this file...
 	
 		int x=0, y=0, dx=0, dy=0, score = 0, level = 1, prelevel = 1, singlescore = 0;
-		int cx=-200, cy=465, dcx=14, lifecount = 3,once=0, shade = 170;
+		int cx=-200, cy=465, dcx=14, lifecount = 3,once=0, shade = 170, shade2 = 170;
 		String text = "";
 		boolean begin = false, gameover = false, congratulate = false, again = true;
 		
@@ -111,6 +111,16 @@ public class RainGame {
 				}
 				if (elapsed%52000>900) temp=true;
 				if(!gameover){
+					while (shade > 0) { // the instructions within these braces will be
+						// repeated until shade = 0
+		Zen.setColor(shade, shade, shade);
+		Zen.fillRect(0, 0, 640, 480); 
+		shade = shade - 1; // this is where the shade variable is changed
+				// each time the loop executes once
+		Zen.sleep(2);
+		Zen.flipBuffer();
+	}
+					
 					Zen.setColor(0,0,0);
 					Zen.fillRect(0, 0, Zen.getZenWidth(), Zen.getZenHeight());
 
@@ -272,16 +282,14 @@ public class RainGame {
 						congratulate = false;
 					}
 				}
- 
 			else{
 				
 				
-				
-				while (shade > 0) { // the instructions within these braces will be
+				while (shade2 > 0) { // the instructions within these braces will be
 									// repeated until shade = 0
-					Zen.setColor(shade, shade, shade);
+					Zen.setColor(shade2, shade2, shade2);
 					Zen.fillRect(0, 0, 640, 480); 
-					shade = shade - 1; // this is where the shade variable is changed
+					shade2 = shade2 - 1; // this is where the shade variable is changed
 							// each time the loop executes once
 					Zen.sleep(2);
 					Zen.flipBuffer();
@@ -300,23 +308,22 @@ public class RainGame {
 				else{
 					Zen.drawText("Score: "+(score+1),150,30);}
 				Zen.drawText("Life: ",460,30);
-				Image image = Zen.getCachedImage("life.png");
-				Graphics2D g = Zen.getBufferGraphics();
 				Zen.drawText("_____________________________________________",0,40);
-				
+				stop("bgm.wav");
+				for(;once<1;once++){
+					playOnce("over.wav");
+				}
 				Zen.drawText("Try Again",245,280);
 				int tx = Zen.getMouseX();
 				int ty = Zen.getMouseY();
 				if(tx>0 && tx<Zen.getZenWidth() && ty>0 && ty<Zen.getZenHeight() && Zen.getMouseButtonsAndModifierKeys() != 0){
 					again = true;
 					begin = false;
+					stop("over.wav");
+					Zen.sleep(0);
 				}
 						
-				stop("bgm.wav");
-				for(;once<1;once++){
-					playOnce("over.wav");
-					
-				}
+				
 				Zen.flipBuffer();
 
             }
